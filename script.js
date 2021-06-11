@@ -7,8 +7,26 @@ class Square {
         this.coords = coords
         this.isBomb = isBomb
     }
-    click() {
-        console.log(this.coords)
+    click(bombsCoords, htmlItem) {
+        console.log(this.coords + " " + this.isBomb)
+
+        // Checks if itself is a bomb
+        if (this.isBomb) {
+            document.write("DEAD!")
+        }
+
+        // Checks how many nearby squares are bombs
+        let coords = this.coords
+        let closeBombs = 0
+        // !!! Needs more work !!!
+        bombsCoords.forEach(function (item) {
+            if ((item[0] === coords[0] || item[0] === coords[0] + 1 ||item[0] === coords[0] - 1) && (item[1] === coords[1] || item[1] === coords[1] + 1 ||item[1] === coords[1] - 1)) closeBombs++
+        })
+        if (closeBombs) $(htmlItem).html(closeBombs)
+        else $(htmlItem).html(0)
+    }
+    flag(htmlItem) {
+        $(htmlItem).css("background-color", "red")
     }
 }
 class Board {
@@ -52,14 +70,21 @@ class Board {
 
         // Generate the visual board
         let board = $("#board")
+        let bombsCoords = this.bombsCoords
         board.css('--grid-rows', xSize);
         board.css('--grid-cols', ySize);
         this.squaresList.forEach(function (item) {
             let square = $("<div></div>")
                 .addClass("square")
-                .html(JSON.stringify(item.coords))
-                .on("click", function () {
-                    item.click()
+                .html(JSON.stringify(item.coords + " " + item.isBomb))
+                .mousedown(function (e) {
+                    switch (e.which) {
+                        case 1:
+                            item.click(bombsCoords, this)
+                            break
+                        case 2:
+                            item.flag(this)
+                    }
                 })
             board.append(square)
         })
@@ -90,5 +115,5 @@ function randomIntFromInterval(min, max) { // min and max included
 }
 
 let board = new Board()
-board.create(1, 2)
+board.create(1, 30)
 console.log(board)
