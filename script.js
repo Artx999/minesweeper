@@ -2,10 +2,12 @@ class Square {
     /**
      * @param {Array.<int>} coords - The x-coordinate of the square
      * @param {boolean} isBomb - Whether or not the square is a bomb
+     * @param {boolean} flagged - Whether or not the square is flagged
      */
-    constructor(coords, isBomb) {
+    constructor(coords, isBomb, flagged = false) {
         this.coords = coords
         this.isBomb = isBomb
+        this.flagged = flagged
     }
     click(bombsCoords, htmlItem) {
         console.log(this.coords + " " + this.isBomb)
@@ -26,7 +28,16 @@ class Square {
         else $(htmlItem).html(0)
     }
     flag(htmlItem) {
-        $(htmlItem).css("background-color", "red")
+        switch (this.flagged) {
+            case false:
+                $(htmlItem).addClass("flagged")
+                this.flagged = true
+                break
+            case true:
+                $(htmlItem).removeClass("flagged")
+                this.flagged = false
+                break
+        }
     }
 }
 class Board {
