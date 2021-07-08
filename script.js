@@ -9,8 +9,14 @@ class Square {
         this.isBomb = isBomb
         this.flagged = flagged
     }
-    click(bombsCoords, htmlItem) {
+    click(bombsCoords, htmlItem, firstClick = false) {
         console.log(this.coords + " " + this.isBomb)
+
+        // Checks if it is the first click
+        if (firstClick && this.isBomb) {
+            this.isBomb = false
+            console.log("Changed first square from bomb to safe")
+        }
 
         // Checks if itself is a bomb
         if (this.isBomb) {
@@ -82,16 +88,21 @@ class Board {
         // Generate the visual board
         let board = $("#board")
         let bombsCoords = this.bombsCoords
+        let firstClick= true
         board.css('--grid-rows', xSize);
         board.css('--grid-cols', ySize);
         this.squaresList.forEach(function (item) {
             let square = $("<div></div>")
                 .addClass("square")
-                .html(JSON.stringify(item.coords + " " + item.isBomb))
+                .html(item.coords + " " + item.isBomb)
                 .mousedown(function (e) {
                     switch (e.which) {
                         case 1:
-                            item.click(bombsCoords, this)
+                            if (firstClick) {
+                                item.click(bombsCoords, this, true)
+                                firstClick = false
+                            }
+                            else item.click(bombsCoords, this)
                             break
                         case 2:
                             item.flag(this)
@@ -124,6 +135,8 @@ game.start()
 function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
+// Prevents middle mouse click scrolling
+$('body').mousedown(function(e){if(e.button===1)return false});
 
 let board = new Board()
 board.create(1, 30)

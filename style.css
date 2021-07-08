@@ -8,19 +8,35 @@ html, body {
     width: 100%;
     height: 100%;
     font-size: 1.2rem;
+    font-family: monospace;
+}
+#game {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #board {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     display: grid;
     grid-gap: 1em;
     grid-template-rows: repeat(var(--grid-rows), 1fr);
     grid-template-columns: repeat(var(--grid-cols), 1fr);
 }
 .square {
+    display: flex;
+    width: 100%; height: 1fr;
     text-align: center;
     background-color: black;
     color: white;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+.square::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
 }
 .flagged {
     background-color: red;
